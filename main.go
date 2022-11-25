@@ -10,9 +10,9 @@ import (
 	"math"
 	"net"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
-	"os"
 )
 
 type Server struct {
@@ -27,13 +27,13 @@ type Client struct {
 type NodeRequest struct {
 	JsonRpc string `json:"jsonrpc"`
 	Method  string `json:"method"`
-	Id			int `json:"id"`
+	Id      int    `json:"id"`
 }
 
 type NodeResponse struct {
 	JsonRpc string `json:"jsonrpc"`
-	Result 	string `json:"result"`
-	Id      int `json:"id"`
+	Result  string `json:"result"`
+	Id      int    `json:"id"`
 }
 
 func main() {
@@ -67,8 +67,8 @@ func (server *Server) Run() {
 func (client *Client) handleRequest() {
 	_, err := bufio.NewReader(client.conn).ReadString('\n')
 	if err != nil {
-					fmt.Println(err)
-					return
+		fmt.Println(err)
+		return
 	}
 	client.conn.Write([]byte("\n"))
 	isHealthy := checkHealth()
@@ -94,11 +94,11 @@ func checkHealth() bool {
 func getLatestBlock(nodeUrl string) int64 {
 	payload := NodeRequest{
 		JsonRpc: "2.0",
-		Method: "eth_blockNumber",
-		Id: 1,
+		Method:  "eth_blockNumber",
+		Id:      1,
 	}
 	body, _ := json.Marshal(payload)
-	resp, err := http.Post(nodeUrl, "application/json", bytes.NewBuffer(body) )
+	resp, err := http.Post(nodeUrl, "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		fmt.Println("Error! Could not request latest block from node.")
 		return 0
@@ -126,8 +126,8 @@ func getLatestBlock(nodeUrl string) int64 {
 }
 
 func getEnv(key, fallback string) string {
-    if value, ok := os.LookupEnv(key); ok {
-        return value
-    }
-    return fallback
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }
